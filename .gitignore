@@ -1,0 +1,19 @@
+/target
+*.blend?
+out
+bin
+build
+target
+obj
+/rootca
+rootca
+rootca/*
+
+# Windowsisms
+Thumbs.db
+Thumbs.db\:encryptable
+Thumbs.db*
+
+
+
+
