@@ -39,4 +39,11 @@ From a Windows machine w/ deps installed, execute
 cargo build --release
 ```
 
+# Research
+
+ - https://crates.io/crates/blue_engine
+ - https://crates.io/crates/dotrix
+ - https://github.com/FyroxEngine/Fyrox?tab=readme-ov-file / https://fyrox.rs/
+
+
 
