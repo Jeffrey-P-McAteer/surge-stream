@@ -24,5 +24,19 @@ TODO
 TODO
 
 
+## Building the Application
+
+Binaries are located under `./target/<host-triple>/release/surge-stream[.exe]`
+
+From a Linux machine w/ deps installed, execute
+```bash
+uv run cross_compile_using_arch_container.py
+```
+
+From a Windows machine w/ deps installed, execute
+
+```bash
+cargo build --release
+```
 
 
