@@ -45,5 +45,8 @@ cargo build --release
  - https://crates.io/crates/dotrix
  - https://github.com/FyroxEngine/Fyrox?tab=readme-ov-file / https://fyrox.rs/
 
+ - https://github.com/coreylowman/cudarc
+ - https://github.com/rayon-rs/rayon
+
 
 
