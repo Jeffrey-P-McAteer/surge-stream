@@ -49,6 +49,8 @@ cargo build --release
 
 # Research
 
+Also see the folder [./research-journey](./research-journey)
+
  - https://crates.io/crates/blue_engine
  - https://crates.io/crates/dotrix
  - https://github.com/FyroxEngine/Fyrox?tab=readme-ov-file / https://fyrox.rs/
