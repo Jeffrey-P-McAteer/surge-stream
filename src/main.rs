@@ -3,16 +3,26 @@
     unused_mut, dead_code, non_upper_case_globals, unused_variables
 )]
 
+mod data_mgmr;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
     // Grab data
-    let data: Vec<u8> = std::fs::read("data/raw-layer-data.pickle")?;
-    let de_options = serde_pickle::DeOptions::new()
-                        .decode_strings()
-                        .replace_recursive_structures()
-                        .replace_unresolved_globals();
-    let mut data: serde_pickle::Value = serde_pickle::value_from_reader(data.as_slice(), de_options)?;
-    //println!("data = {:#?}", data);
+    let data: serde_pickle::Value;
+    if let Some(pickle_file) = args.get(1) {
+        let pickle_bytes: Vec<u8> = std::fs::read(pickle_file)?;
+        let de_options = serde_pickle::DeOptions::new()
+                            .decode_strings()
+                            .replace_recursive_structures()
+                            .replace_unresolved_globals();
+        data = serde_pickle::value_from_reader(pickle_bytes.as_slice(), de_options)?;
+    }
+    else {
+        println!("Warning: Generating RANDOM gis data. Pass a path to pickled data to use real GIS data (eg \"data/raw-layer-data.pickle\" as arg1)");
+        data = std::unimplemented!();
+    };
+
+    println!("data = {:#?}", data);
 
     // We record some "entire system" assumptions here.
     // These particular numbers came from:

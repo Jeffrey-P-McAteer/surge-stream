@@ -27,8 +27,10 @@ TODO
 
 ```bash
 rm -rf ./data/ # If you want to delete old data + have a clean/fresh run
+uv run fetch_data.py && cargo run --release data/raw-layer-data.pickle
 
-uv run fetch_data.py && cargo run --release
+# For Debug purposes, we can generate a random set of collected data in
+
 
 ```
 
