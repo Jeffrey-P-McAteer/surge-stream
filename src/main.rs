@@ -42,6 +42,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //  - list of OUTPUT facilities
     //  - graph of pipelines, the INPUT / OUTPUT facility nearest and endpoint is recorded
 
+    // We extract the point data w/ numbers like "<Product Type> Downstream Charge Capacity, Current Year (Barrels Per Calendar Day)"
+    // and use that as OUTPUT for that type at that location.
+
+
 
     // Build spatial indexes
 
