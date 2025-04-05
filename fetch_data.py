@@ -9,6 +9,7 @@ import os
 import pathlib
 import zipfile
 import pickle
+import traceback
 
 import arcgis
 
@@ -39,7 +40,8 @@ try:
     # Data is currently Layers => List of Features in Esri JSON format.
     downloaded_data[layer_name] = list()
     for item in fl.query(out_sr=4326):
-     downloaded_data[layer_name].append( item )
+      # print(f'typeof(item) = {type(item)}') # It's a arcgis.features.feature.Feature
+      downloaded_data[layer_name].append( item.as_dict )
 
 except:
   traceback.print_exc()
