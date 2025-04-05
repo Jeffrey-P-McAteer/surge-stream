@@ -8,32 +8,47 @@
 import os
 import pathlib
 import zipfile
-
+import pickle
 
 import arcgis
 
 from arcgis.gis import GIS
 
-gis = GIS()
+data_pickle_path = os.path.join(os.path.dirname(__file__), 'data', 'raw-layer-data.pickle')
+downloaded_data = dict()
+if os.path.exists(data_pickle_path):
+  with open(data_pickle_path, 'rb') as fd:
+    downloaded_data = pickle.load(fd)
 
-public_data_item_id = '5e7f84d84b4542f09b17c398a90ec5be'
+try:
+  gis = GIS()
 
-# `ContentManager.get` will return `None` if there is no Item with ID `5e7f84d84b4542f09b17c398a90ec5be`
-#data_item = gis.content.get(public_data_item_id)
-#print(f'data_item = {data_item}')
+  layer_urls_to_download = [
+    ('lines? idk', 'https://services.arcgis.com/jDGuO8tYggdCCnUJ/ArcGIS/rest/services/PLALLPLS_polyline/FeatureServer/0'),
+  ]
 
-#for layer in data_item.layers:
-#  print(f'layer = {layer}')
+  for layer_name, layer_url in layer_urls_to_download:
+    fl = arcgis.features.FeatureLayer(layer_url, gis)
+    print(f'[ {layer_name} ] fl = {fl}')
 
-flc = arcgis.features.FeatureLayerCollection('https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/PLALLPLS_polyline/FeatureServer', gis)
-print(f'flc = {flc}')
+    num_items_in_layer = fl.query(return_count_only=True)
 
-for item in flc.layers[0].query():
-  print(f'item = {item}')
+    if layer_name in downloaded_data and len(downloaded_data[layer_name]) >= num_items_in_layer:
+      continue # We've already fetched this, keep going
 
+    # Data is currently Layers => List of Features in Esri JSON format.
+    downloaded_data[layer_name] = list()
+    for item in fl.query(out_sr=4326):
+     downloaded_data[layer_name].append( item )
 
-
-
+except:
+  traceback.print_exc()
+finally:
+  os.makedirs(os.path.dirname(data_pickle_path), exist_ok=True)
+  with open(data_pickle_path, 'wb') as fd:
+    pickle.dump(downloaded_data, fd, protocol=pickle.HIGHEST_PROTOCOL)
+  print(f'Saved {len(downloaded_data)} items to {data_pickle_path}  ({",".join(downloaded_data.keys())})')
+  print(f'{data_pickle_path} is {round(os.path.getsize(data_pickle_path)/1000000, 1)} mb large')
 
 
 

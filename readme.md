@@ -51,4 +51,8 @@ cargo build --release
  - https://www.arcgis.com/apps/View/index.html?appid=5e7f84d84b4542f09b17c398a90ec5be
  - https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/PLALLPLS_polyline/FeatureServer/0
 
+ - https://github.com/easbar/fast_paths
+ - https://docs.rs/serde-pickle/latest/serde_pickle/
+ -
+
 
