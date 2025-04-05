@@ -46,7 +46,7 @@ except:
 finally:
   os.makedirs(os.path.dirname(data_pickle_path), exist_ok=True)
   with open(data_pickle_path, 'wb') as fd:
-    pickle.dump(downloaded_data, fd, protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(downloaded_data, fd, protocol=5) # because our Rust end has support for 5
   print(f'Saved {len(downloaded_data)} items to {data_pickle_path}  ({",".join(downloaded_data.keys())})')
   print(f'{data_pickle_path} is {round(os.path.getsize(data_pickle_path)/1000000, 1)} mb large')
 
