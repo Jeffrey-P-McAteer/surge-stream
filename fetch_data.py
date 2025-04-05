@@ -42,32 +42,38 @@ if os.path.exists(data_pickle_path):
 try:
   gis = GIS()
 
+  # TODO better data identification; the goal is to funnel
+  # named lists of item with GIS and attributes which will be
+  # used by the Rust code to fill the model with data.
   layer_urls_to_download = [
-    ('north-american-pipeline',  'https://services.arcgis.com/jDGuO8tYggdCCnUJ/ArcGIS/rest/services/PLALLPLS_polyline/FeatureServer/0'),
-    ('mexican-oil-refinery',     'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Mexican_Oil_Refinery_Capacity/FeatureServer/0'),
-    ('canadian-oil-refinery',    'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Canadian_Oil_Refinery_Capacity/FeatureServer/0'),
-    ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
-    ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
-    ('us-lng-terminals',         'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/United_States_LNG_Terminals_and_Peak_Shavers/FeatureServer/0'),
+    # ('north-american-pipeline',  'https://services.arcgis.com/jDGuO8tYggdCCnUJ/ArcGIS/rest/services/PLALLPLS_polyline/FeatureServer/0'),
+    # ('mexican-oil-refinery',     'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Mexican_Oil_Refinery_Capacity/FeatureServer/0'),
+    # ('canadian-oil-refinery',    'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Canadian_Oil_Refinery_Capacity/FeatureServer/0'),
+    # ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
+    # ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
+    # ('us-lng-terminals',         'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/United_States_LNG_Terminals_and_Peak_Shavers/FeatureServer/0'),
+    ('us-crude-oil-pipelines',     'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/CrudeOil_Pipelines_US_EIA/FeatureServer/0'),
+
   ]
 
   # "QUANTITY12" isn't useful esri! This is the result of Jeff mapping data names to layer label names -_-
+  # Data Attributes on the left get re-named to the values on the right.
   attribute_rich_names = {
     'QUANTITY1': 'Cracking "Fresh Feed", Downstream Charge Capacity, Current Year (Barrels Per Calendar Day)',
     'QUANTITY10': 'Hydrocracking, Gas Oil, Downstream Charge Capacity, Current Year (Barrels Per Calendar Day)',
   }
 
   # Even better; just ask the layer popupInfo.fieldInfos structure for the data
-  with urllib.request.urlopen('https://www.arcgis.com/sharing/rest/content/items/67980e7ee1904cbcb3b53cdd2c3731c7/data?f=json') as fd:
-    layer_meta_data = json.loads(fd.read().decode('utf-8'))
-  for field_info_list in get_all_key_values_in(layer_meta_data, 'fieldInfos'):
-    for field_info in field_info_list:
-      field_name = field_info.get('fieldName', '')
-      field_label = field_info.get('label', '')
-      if field_name.casefold() != field_label.casefold():
-        if DEBUG:
-          print(f'{field_name} is actually a {field_label}')
-        attribute_rich_names[field_name] = field_label
+  # with urllib.request.urlopen('https://www.arcgis.com/sharing/rest/content/items/67980e7ee1904cbcb3b53cdd2c3731c7/data?f=json') as fd:
+  #   layer_meta_data = json.loads(fd.read().decode('utf-8'))
+  # for field_info_list in get_all_key_values_in(layer_meta_data, 'fieldInfos'):
+  #   for field_info in field_info_list:
+  #     field_name = field_info.get('fieldName', '')
+  #     field_label = field_info.get('label', '')
+  #     if field_name.casefold() != field_label.casefold():
+  #       if DEBUG:
+  #         print(f'{field_name} is actually a {field_label}')
+  #       attribute_rich_names[field_name] = field_label
 
 
   for layer_name, layer_url in layer_urls_to_download:
