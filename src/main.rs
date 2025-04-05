@@ -1,6 +1,7 @@
 
 #![allow(
-    unused_mut, dead_code, non_upper_case_globals, unused_variables
+    unused_mut, dead_code, non_upper_case_globals, unused_variables,
+    unreachable_code,
 )]
 
 mod data_mgmr;
@@ -19,7 +20,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     else {
         println!("Warning: Generating RANDOM gis data. Pass a path to pickled data to use real GIS data (eg \"data/raw-layer-data.pickle\" as arg1)");
-        data = std::unimplemented!();
+        println!("         Pass SEED_NONCE to set repeadable random data.");
+        data = data_mgmr::gen_rand_raw_layer_data();
     };
 
     println!("data = {:#?}", data);

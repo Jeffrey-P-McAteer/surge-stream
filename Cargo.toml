@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 fast_paths = "1"
 serde-pickle = "1"
+fastrand = "2"
 
 
 
