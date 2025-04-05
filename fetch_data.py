@@ -52,8 +52,31 @@ try:
     # ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
     # ('us-oil-refinery',          'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/US_Oil_Refineries_Broken_Out_By_Capacity_and_Product_Type/FeatureServer/0'),
     # ('us-lng-terminals',         'https://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/United_States_LNG_Terminals_and_Peak_Shavers/FeatureServer/0'),
-    ('us-crude-oil-pipelines',     'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/CrudeOil_Pipelines_US_EIA/FeatureServer/0'),
 
+    # These were extracted from a running app w/ dump_har_urls.py
+    ('Battery_Storage_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Battery_Storage_Plants/FeatureServer/0'),
+    ('Biomass_Plants_Testing_view', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Biomass_Plants_Testing_view/FeatureServer/0'),
+    ('BorderCrossing_Electric_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/BorderCrossing_Electric_EIA/FeatureServer/0'),
+    ('BorderCrossing_Liquids_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/BorderCrossing_Liquids_EIA/FeatureServer/0'),
+    ('Coal_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Coal_Power_Plants/FeatureServer/0'),
+    ('CrudeOil_Pipelines_US_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/CrudeOil_Pipelines_US_EIA/FeatureServer/0'),
+    ('CrudeOil_RailTerminals_US_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/CrudeOil_RailTerminals_US_EIA/FeatureServer/0'),
+    ('Geothermal_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Geothermal_Power_Plants/FeatureServer/0'),
+    ('HGL_Pipelines_US_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/HGL_Pipelines_US_EIA/FeatureServer/0'),
+    ('Hydroelectric_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Hydroelectric_Power_Plants/FeatureServer/0'),
+    ('Hydro_Pumped_Storage_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Hydro_Pumped_Storage_Power_Plants/FeatureServer/0'),
+    ('Natural_Gas_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Natural_Gas_Power_Plants/FeatureServer/0'),
+    ('Nuclear_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Nuclear_Power_Plants/FeatureServer/0'),
+    ('Other_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Other_Power_Plants/FeatureServer/0'),
+    ('Petroleum_Ports', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Petroleum_Ports/FeatureServer/0'),
+    ('Petroleum_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Petroleum_Power_Plants/FeatureServer/0'),
+    ('PetroleumProduct_Pipelines_US_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/PetroleumProduct_Pipelines_US_EIA/FeatureServer/0'),
+    ('Petroleum_Waterways', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Petroleum_Waterways/FeatureServer/0'),
+    ('Solar_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Solar_Power_Plants/FeatureServer/0'),
+    ('TightOil_ShaleGas_Plays_Lower48_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/TightOil_ShaleGas_Plays_Lower48_EIA/FeatureServer/0'),
+    ('Wind_Power_Plants', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/arcgis/rest/services/Wind_Power_Plants/FeatureServer/0'),
+    ('USA_Railroads_1', 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Railroads_1/FeatureServer/0'),
+    ('US_Wind_Turbine_Database', 'https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/US_Wind_Turbine_Database/FeatureServer/0'),
   ]
 
   # "QUANTITY12" isn't useful esri! This is the result of Jeff mapping data names to layer label names -_-
