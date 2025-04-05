@@ -21,9 +21,15 @@ if len(sys.argv) < 3:
 har_file = sys.argv[1]
 filter_text = sys.argv[2]
 
-
 with open(har_file, 'rb') as fd:
-  har_parser = HarParser(json.loads(fd.read()))
+  har_parser = haralyzer.HarParser(json.loads(fd.read().decode('utf-8')))
+
+print(f'{len(har_parser.pages)} pages are available')
+for page in har_parser.pages:
+  print(f'page = {page}')
+
+
+
 
 
 
