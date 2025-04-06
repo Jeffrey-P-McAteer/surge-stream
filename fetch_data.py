@@ -53,7 +53,10 @@ import earth_osm.args
 print(f'earth_osm={earth_osm}')
 
 orig_sys_argv = list(sys.argv)
-sys.argv[:] = ['earth_osm.py', 'extract', 'power', '--regions', 'north-america', '--out_dir', os.path.join(os.path.dirname(__file__), 'data'), ]
+# choose from 'aerialway', 'aeroway', 'amenity', 'barrier', 'boundary', 'building', 'craft', 'emergency', 'geological',
+#             'highway', 'historic', 'leisure', 'man_made', 'military', 'office', 'place', 'power', 'public_transport',
+#             'railway', 'shop', 'sport', 'tourism', 'waterway'
+sys.argv[:] = ['earth_osm.py', 'extract', 'man_made', '--regions', 'north-america', '--out_dir', os.path.join(os.path.dirname(__file__), 'data'), ]
 earth_osm.args.main()
 
 
