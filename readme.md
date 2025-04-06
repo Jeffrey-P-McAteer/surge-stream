@@ -29,8 +29,9 @@ TODO
 rm -rf ./data/ # If you want to delete old data + have a clean/fresh run
 uv run fetch_data.py && cargo run --release data/raw-layer-data.pickle
 
-# For Debug purposes, we can generate a random set of collected data in
-
+# Misc one-liners
+cargo run --release --target=x86_64-pc-windows-gnu ./data/raw-layer-data.pickle ./data/assumptions.toml
+VERBOSE=1 cargo run --release --target=x86_64-unknown-linux-gnu ./data/raw-layer-data.pickle ./data/assumptions.toml
 
 ```
 
