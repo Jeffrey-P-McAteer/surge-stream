@@ -6,9 +6,17 @@ pub struct AssumptionsToml {
   pub aoi_min_map_pt: (f64, f64), // MinX, MinY
   pub aoi_max_map_pt: (f64, f64), // MaxX, MaxY
 
-  pub aoi_annual_production: Vec<MeasuredProductAmount>,
-  pub aoi_annual_consumption: Vec<MeasuredProductAmount>,
+  pub aoi_annual_production: Vec<MeasuredProductAmount_AssumptionsFormat>,
+  pub aoi_annual_consumption: Vec<MeasuredProductAmount_AssumptionsFormat>,
 }
+
+#[allow(non_camel_case_types)]
+#[derive(serde::Deserialize, serde::Serialize, Clone, Debug)]
+pub struct MeasuredProductAmount_AssumptionsFormat {
+  pub product: String,
+  pub thousand_barrels_per_day: f64,
+}
+
 
 pub type ProductID = u32;
 
