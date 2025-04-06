@@ -85,9 +85,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let begin_t = std::time::SystemTime::now();
     let mut debug_gis_records: Vec<gis_structs::DebugPoint> = vec![];
-    for (lat_y, lon_x) in all_known_points.iter() {
+    for (lat_y, lon_x, debug_msg) in all_known_points.iter() {
         debug_gis_records.push(gis_structs::DebugPoint{
-            msg: format!("TODO"),
+            msg: debug_msg.to_string(),
             geom: gpkg::types::GPKGPointZ { x: *lon_x, y: *lat_y, z: 0.0},
         });
     }
