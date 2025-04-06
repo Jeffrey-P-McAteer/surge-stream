@@ -9,11 +9,16 @@ fast_paths = "1"
 serde-pickle = "1"
 fastrand = "2"
 toml = "0.8"
-#galileo = { version = "0.1", features = ["wgpu", "serde", "winit", "geojson"]}
-galileo = { git = "https://github.com/Maximkaaa/galileo", features = ["wgpu", "serde", "winit", "geojson"]}
-galileo-types = { git = "https://github.com/Maximkaaa/galileo" }
-galileo-egui = { git = "https://github.com/Maximkaaa/galileo" }
-
+# geozero = { version = "0.14", features = ["with-gpkg", "with-wkb"] }
 tokio = { version = "1", features = ["full"] }
+
+gpkg = { git = "https://github.com/cjriley9/gpkg-rs.git" }
+rusqlite = "0.27" # gpkg uses this version of rusqlite -_-
+
+
+#galileo = { version = "0.1", features = ["wgpu", "serde", "winit", "geojson"]}
+#galileo = { git = "https://github.com/Maximkaaa/galileo", features = ["wgpu", "serde", "winit", "geojson"]}
+#galileo-types = { git = "https://github.com/Maximkaaa/galileo" }
+#galileo-egui = { git = "https://github.com/Maximkaaa/galileo" }
 
 

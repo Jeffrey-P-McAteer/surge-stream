@@ -66,6 +66,6 @@ Also see the folder [./research-journey](./research-journey)
 
  - https://github.com/easbar/fast_paths
  - https://docs.rs/serde-pickle/latest/serde_pickle/
- -
+ - https://github.com/cjriley9/gpkg-rs
 
 
