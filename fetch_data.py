@@ -132,6 +132,8 @@ try:
 
       downloaded_data[layer_name].append( item_d )
 
+    print(f'Saved data for {layer_name}')
+
   # Begin downloading Arbitrary Data from JSON data sources
   # (in this particular case, all oil wells + supporting infrastructure in Texas)
   if not 'texas-drilling.com' in downloaded_data or len(downloaded_data['texas-drilling.com']) < 10:
