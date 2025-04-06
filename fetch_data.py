@@ -122,6 +122,8 @@ try:
 
       # print(f'item_d = {item_d}')
 
+      item_d['attributes']['from_layer_name'] = layer_name
+
       downloaded_data[layer_name].append( item_d )
 
 except:
