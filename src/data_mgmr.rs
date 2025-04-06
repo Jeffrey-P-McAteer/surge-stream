@@ -209,6 +209,80 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
   return points;
 }
 
+
+// lat_y, lon_x, Facility Name, type of product produced, quantity in throusand barrels/day
+pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, String, String, f64)> {
+  let mut points: Vec<(f64, f64, String, String, f64)> = vec![];
+
+  match data_sea {
+    serde_pickle::Value::Dict(map) => {
+      if let Some(geometry_v) = map.get( &serde_pickle::value::HashableValue::String("geometry".into()) ) {
+        if let serde_pickle::Value::Dict(geometry_map) = geometry_v {
+          if let (Some(serde_pickle::value::Value::F64(x_val)), Some(serde_pickle::value::Value::F64(y_val))) = (geometry_map.get( &serde_pickle::value::HashableValue::String("x".into()) ), geometry_map.get( &serde_pickle::value::HashableValue::String("y".into()) )) {
+
+            // Combine all attributes into Key=Value string
+            let mut is_a_consumer = false;
+            let mut name_s = String::new();
+            let mut product_type_s = String::new();
+            let mut amount_thousand_barrels_per_day = 0.0;
+
+            if let Some(attributes_v) = map.get( &serde_pickle::value::HashableValue::String("attributes".into()) ) {
+              if let serde_pickle::Value::Dict(attributes_map) = attributes_v {
+                let mut contains_mw_key_indicating_reciever_of_fuel = false;
+                for (k,v) in attributes_map.iter() {
+                  if let serde_pickle::value::HashableValue::String(key_str) = k {
+                    if key_str.ends_with("_MW") || key_str.ends_with("_mw") {
+                      contains_mw_key_indicating_reciever_of_fuel = true;
+                    }
+                  }
+                }
+                if contains_mw_key_indicating_reciever_of_fuel {
+                  // This looks like a plant turning fuel into electricity, thus it is a consumer of that resource
+                  for (k,v) in attributes_map.iter() {
+                    let v_string_lower = format!("{:?}", v).to_lowercase();
+                    if v_string_lower.contains("gas") && v_string_lower.contains("process") && v_string_lower.contains("plant") {
+                      // Is DEFINITELY a natural gas producer!
+                      is_a_consumer = true;
+                      product_type_s = "natural gas".to_string();
+                    }
+                  }
+                  if is_a_consumer {
+                    amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW", "!"], attributes_map);
+                  }
+                }
+              }
+            }
+
+            if is_a_consumer {
+              points.push( (*y_val, *x_val, name_s, product_type_s, amount_thousand_barrels_per_day) ); // lat, lon
+            }
+
+          }
+        }
+      }
+      else {
+        for (k,v) in map.iter() {
+          let mut sub_points = get_all_consumers(v);
+          points.append(&mut sub_points);
+        }
+      }
+    }
+    serde_pickle::Value::List(list) => {
+      for v in list.iter() {
+        let mut sub_points = get_all_consumers(v);
+        points.append(&mut sub_points);
+      }
+    }
+    _unused => {
+
+    }
+  }
+
+  return points;
+}
+
+
+
 pub fn read_number(possible_names: &[&'static str], attribute_map: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> f64 {
   let val = 0.0;
   for name in possible_names.iter() {

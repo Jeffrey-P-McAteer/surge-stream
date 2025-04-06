@@ -69,6 +69,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let all_production_points = data_mgmr::get_all_producers(&data);
     print_time_since(&begin_t, format!("Time taken to fetch {} Production Points from the sea-of-layers", all_production_points.len() ));
 
+    let begin_t = std::time::SystemTime::now();
+    let all_consumption_points = data_mgmr::get_all_consumers(&data);
+    print_time_since(&begin_t, format!("Time taken to fetch {} Consumption Points from the sea-of-layers", all_consumption_points.len() ));
+
     if is_verbose && std::path::Path::new(output_gpkg).exists() {
         println!("Verbose and {} exists, so we are deleting it first!", output_gpkg);
         std::fs::remove_file(output_gpkg)?;
@@ -81,6 +85,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         gp.create_layer::<gis_structs::DebugLine>()?;
 
         gp.create_layer::<gis_structs::ProductionPoint>()?;
+        gp.create_layer::<gis_structs::ConsumptionPoint>()?;
 
         gp
     }
@@ -125,6 +130,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     print_time_since(&begin_t, format!("Time taken to convert {} in-memory to GIS records", production_point_gis_records.len() ));
 
     let begin_t = std::time::SystemTime::now();
+    let mut consumption_point_gis_records: Vec<gis_structs::ConsumptionPoint> = vec![];
+    for (lat_y, lon_x, facility_name, product_name, product_quantity) in all_consumption_points.iter() {
+        consumption_point_gis_records.push(gis_structs::ConsumptionPoint{
+            facility_name: facility_name.to_string(),
+            product_name: product_name.to_string(),
+            quantity_thousand_barrels_per_day: *product_quantity,
+            geom: gpkg::types::GPKGPointZ { x: *lon_x, y: *lat_y, z: 0.0},
+        });
+    }
+    print_time_since(&begin_t, format!("Time taken to convert {} in-memory to GIS records", consumption_point_gis_records.len() ));
+
+
+    let begin_t = std::time::SystemTime::now();
     gp.insert_many(&debug_gis_records)?;
     print_time_since(&begin_t, format!("Time taken to insert {} GIS records", debug_gis_records.len() ));
 
@@ -137,8 +155,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let begin_t = std::time::SystemTime::now();
     gp.insert_many(&production_point_gis_records)?;
-    print_time_since(&begin_t, format!("Time taken to insert {} GIS records", all_production_points.len() ));
+    print_time_since(&begin_t, format!("Time taken to insert {} GIS Production Point records", all_production_points.len() ));
 
+    let begin_t = std::time::SystemTime::now();
+    gp.insert_many(&consumption_point_gis_records)?;
+    print_time_since(&begin_t, format!("Time taken to insert {} GIS Consumption Point records", all_consumption_points.len() ));
 
 
     /*

@@ -25,3 +25,13 @@ pub struct ProductionPoint {
   #[geom_field("PointZ")]
   pub geom: gpkg::types::GPKGPointZ,
 }
+
+
+#[derive(gpkg::GPKGModel, Debug)]
+pub struct ConsumptionPoint {
+  pub facility_name: String,
+  pub product_name: String,
+  pub quantity_thousand_barrels_per_day: f64,
+  #[geom_field("PointZ")]
+  pub geom: gpkg::types::GPKGPointZ,
+}
