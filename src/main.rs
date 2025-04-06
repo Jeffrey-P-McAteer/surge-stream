@@ -141,6 +141,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     print_time_since(&begin_t, format!("Time taken to convert {} in-memory to GIS records", consumption_point_gis_records.len() ));
 
+    // Here we REMOVE all ProductionPoint which are within 500m of a ConsumptionPoint
+    // the assumption is general survey data is so vague as to allow Consumer plans to look like producers w/ no data.
+    let original_production_point_gis_records_len = production_point_gis_records.len();
+    production_point_gis_records.retain(|production_pt| {
+        let mut min_distance_latlon = 999999999.0;
+        for consumption_point_gis_record in consumption_point_gis_records.iter() {
+            let distance = (
+                (consumption_point_gis_record.geom.x - production_pt.geom.x).powf(2.0) + (consumption_point_gis_record.geom.y - production_pt.geom.y).powf(2.0)
+            ).sqrt();
+            if distance < min_distance_latlon {
+                min_distance_latlon = distance;
+            }
+        }
+        // Approx 111_000 meters / degree longitude
+        let hundred_meters_in_degrees = 0.001;
+        return min_distance_latlon > 5.0*hundred_meters_in_degrees;
+    });
+    let removed_producers_because_gen_facs = original_production_point_gis_records_len - production_point_gis_records.len();
+    println!("Removed {} producers because they were within 500m of an electric power generator, and we assume this indicates vague data.", removed_producers_because_gen_facs);
+
 
     let begin_t = std::time::SystemTime::now();
     gp.insert_many(&debug_gis_records)?;
