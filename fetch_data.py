@@ -48,22 +48,26 @@ if os.path.exists(data_pickle_path):
       sys.exit(1)
 
 ### Experiment Space
-import earth_osm.args
+if DEBUG:
+  print('TODO REMOVE THIS CODE!')
+  print('DEBUG set, performing experiment...')
 
-print(f'earth_osm={earth_osm}')
+  import earth_osm.args
 
-orig_sys_argv = list(sys.argv)
-# choose from 'aerialway', 'aeroway', 'amenity', 'barrier', 'boundary', 'building', 'craft', 'emergency', 'geological',
-#             'highway', 'historic', 'leisure', 'man_made', 'military', 'office', 'place', 'power', 'public_transport',
-#             'railway', 'shop', 'sport', 'tourism', 'waterway'
-sys.argv[:] = ['earth_osm.py', 'extract', 'man_made', '--regions', 'north-america', '--out_dir', os.path.join(os.path.dirname(__file__), 'data'), ]
-earth_osm.args.main()
+  print(f'earth_osm={earth_osm}')
+
+  orig_sys_argv = list(sys.argv)
+  # choose from 'aerialway', 'aeroway', 'amenity', 'barrier', 'boundary', 'building', 'craft', 'emergency', 'geological',
+  #             'highway', 'historic', 'leisure', 'man_made', 'military', 'office', 'place', 'power', 'public_transport',
+  #             'railway', 'shop', 'sport', 'tourism', 'waterway'
+  sys.argv[:] = ['earth_osm.py', 'extract', 'man_made', '--regions', 'north-america', '--out_dir', os.path.join(os.path.dirname(__file__), 'data'), ]
+  earth_osm.args.main()
 
 
-# Restore flags
-sys.argv[:] = orig_sys_argv
+  # Restore flags
+  sys.argv[:] = orig_sys_argv
 
-sys.exit(1)
+  sys.exit(1)
 ###
 
 try:
