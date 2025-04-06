@@ -145,10 +145,19 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
             let mut product_type_s = String::new();
             let mut amount_thousand_barrels_per_day = 0.0;
 
-            // A natural gas producer will contain "" and "" in the data
-
             if let Some(attributes_v) = map.get( &serde_pickle::value::HashableValue::String("attributes".into()) ) {
               if let serde_pickle::Value::Dict(attributes_map) = attributes_v {
+                let mut contains_mw_key_indicating_reciever_of_fuel = false;
+                for (k,v) in attributes_map.iter() {
+                  if let serde_pickle::value::HashableValue::String(key_str) = k {
+                    if key_str.ends_with("_MW") || key_str.ends_with("_mw") {
+                      contains_mw_key_indicating_reciever_of_fuel = true;
+                    }
+                  }
+                }
+                if contains_mw_key_indicating_reciever_of_fuel {
+                  return points; // Skip this item, as it contains info making it 100% a consumer of a resource
+                }
                 for (k,v) in attributes_map.iter() {
                   let v_string_lower = format!("{:?}", v).to_lowercase();
                   if v_string_lower.contains("gas") && v_string_lower.contains("process") && v_string_lower.contains("plant") {
@@ -165,6 +174,9 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                   };
                   let v_string = format!("{:?}", v);
                   debug_s += &format!("{k_string}={v_string}\n");*/
+                }
+                if is_a_producer {
+                  amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "!"], attributes_map);
                 }
               }
             }
@@ -197,9 +209,30 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
   return points;
 }
 
-pub fn read_number(possible_names: &[&'static str], attributes: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> f64 {
+pub fn read_number(possible_names: &[&'static str], attribute_map: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> f64 {
   let val = 0.0;
+  for name in possible_names.iter() {
+    if *name == "!" {
+      eprintln!("Cannot find any of {:?} in {:#?}", possible_names, attribute_map);
+      panic!("Cannot find an attribute we expected!");
+    }
+    if let Some(val) = attribute_map.get( &serde_pickle::value::HashableValue::String((*name).into()) ) {
+      match val {
+        serde_pickle::value::Value::F64(as_f64) => {
+          return *as_f64;
+        }
+        serde_pickle::value::Value::I64(as_i64) => {
+          return (*as_i64) as f64;
+        }
+        serde_pickle::value::Value::Int(big_int) => {
+          panic!("TODO implement transforming serde_pickle::value::Value::Int into 64 bits of data... somehow.");
+        }
+        _unused => {
 
+        }
+      }
+    }
+  }
   return val;
 }
 
