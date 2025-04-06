@@ -36,8 +36,14 @@ DEBUG = 'debug' in sys.argv
 data_pickle_path = os.path.join(os.path.dirname(__file__), 'data', 'raw-layer-data.pickle')
 downloaded_data = dict()
 if os.path.exists(data_pickle_path):
-  with open(data_pickle_path, 'rb') as fd:
-    downloaded_data = pickle.load(fd)
+  try:
+    with open(data_pickle_path, 'rb') as fd:
+      downloaded_data = pickle.load(fd)
+  except:
+    traceback.print_exc()
+    yn = input('Error occurred; continue y/n? ')
+    if not 'y'.casefold() in yn.casefold():
+      sys.exit(1)
 
 try:
   gis = GIS()
@@ -163,6 +169,7 @@ try:
               'name': point.get('name', ''),
             },
           })
+      print(f'Saved data from texas-drilling.com for {county_name}')
 
     downloaded_data['texas-drilling.com'] = texas_oil_field_esri_features
 
