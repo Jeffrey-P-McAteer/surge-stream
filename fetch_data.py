@@ -1,7 +1,8 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#   "arcgis"
+#   "arcgis",
+#   "earth-osm"
 # ]
 # ///
 
@@ -15,8 +16,9 @@ import urllib.request
 import json
 
 import arcgis
-
 from arcgis.gis import GIS
+
+import earth_osm
 
 def get_all_key_values_in(collection, search_key):
   values = []
@@ -44,6 +46,22 @@ if os.path.exists(data_pickle_path):
     yn = input('Error occurred; continue y/n? ')
     if not 'y'.casefold() in yn.casefold():
       sys.exit(1)
+
+### Experiment Space
+import earth_osm.args
+
+print(f'earth_osm={earth_osm}')
+
+orig_sys_argv = list(sys.argv)
+sys.argv[:] = ['earth_osm.py', 'extract', 'power', '--regions', 'north-america', '--out_dir', os.path.join(os.path.dirname(__file__), 'data'), ]
+earth_osm.args.main()
+
+
+# Restore flags
+sys.argv[:] = orig_sys_argv
+
+sys.exit(1)
+###
 
 try:
   gis = GIS()
