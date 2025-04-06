@@ -78,7 +78,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut gp = if !std::path::Path::new(output_gpkg).exists() {
         let gp = gpkg::GeoPackage::create(output_gpkg)?;
         gp.create_layer::<gis_structs::DebugPoint>()?;
+        gp.create_layer::<gis_structs::DebugLine>()?;
+
         gp.create_layer::<gis_structs::ProductionPoint>()?;
+
         gp
     }
     else {
@@ -111,9 +114,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     gp.insert_many(&debug_gis_records)?;
     print_time_since(&begin_t, format!("Time taken to insert {} GIS records", debug_gis_records.len() ));
 
+
+    let begin_t = std::time::SystemTime::now();
+    let debug_lines = data_mgmr::get_all_lines(&data);
+    gp.insert_many(&debug_lines)?;
+    print_time_since(&begin_t, format!("Time taken to fetch + insert {} GIS debug lines", debug_lines.len()));
+
+
     let begin_t = std::time::SystemTime::now();
     gp.insert_many(&production_point_gis_records)?;
     print_time_since(&begin_t, format!("Time taken to insert {} GIS records", all_production_points.len() ));
+
 
 
     /*

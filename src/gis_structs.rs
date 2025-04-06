@@ -10,6 +10,14 @@ pub struct DebugPoint {
 
 
 #[derive(gpkg::GPKGModel, Debug)]
+pub struct DebugLine {
+  pub msg: String,
+  #[geom_field("LineString")]
+  pub geom: gpkg::types::GPKGLineString,
+}
+
+
+#[derive(gpkg::GPKGModel, Debug)]
 pub struct ProductionPoint {
   pub facility_name: String,
   pub product_name: String,
