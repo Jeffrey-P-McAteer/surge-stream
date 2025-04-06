@@ -128,42 +128,43 @@ try:
 
   # Begin downloading Arbitrary Data from JSON data sources
   # (in this particular case, all oil wells + supporting infrastructure in Texas)
-  county_ids_hmtl_url = 'https://www.texas-drilling.com/map-search'
-  county_id_to_name_dict = dict()
-  with urllib.request.urlopen(county_ids_hmtl_url) as fd:
-    county_ids_html = fd.read().decode('utf-8')
-    have_seen_Select_County_line = False
-    for line in county_ids_html.splitlines():
-      if 'Select County'.casefold() in line.casefold():
-        have_seen_Select_County_line = True
-        continue # Don't process _this_ line b/c it's not a number
+  if not 'texas-drilling.com' in downloaded_data or len(downloaded_data['texas-drilling.com']) < 10:
+    county_ids_hmtl_url = 'https://www.texas-drilling.com/map-search'
+    county_id_to_name_dict = dict()
+    with urllib.request.urlopen(county_ids_hmtl_url) as fd:
+      county_ids_html = fd.read().decode('utf-8')
+      have_seen_Select_County_line = False
+      for line in county_ids_html.splitlines():
+        if 'Select County'.casefold() in line.casefold():
+          have_seen_Select_County_line = True
+          continue # Don't process _this_ line b/c it's not a number
 
-      if have_seen_Select_County_line:
-        if 'option value=' in line and '</option>' in line and len(line) < 180:
-          number = line.split('"')[1]
-          county_name = line.split('>')[1].split('<')[0].strip()
-          county_id_to_name_dict[county_name] = int(number)
+        if have_seen_Select_County_line:
+          if 'option value=' in line and '</option>' in line and len(line) < 180:
+            number = line.split('"')[1]
+            county_name = line.split('>')[1].split('<')[0].strip()
+            county_id_to_name_dict[county_name] = int(number)
 
-  if DEBUG:
-    print(f'county_id_to_name_dict = {county_id_to_name_dict}')
+    if DEBUG:
+      print(f'county_id_to_name_dict = {county_id_to_name_dict}')
 
-  texas_oil_field_esri_features = []
-  for county_name, county_id in county_id_to_name_dict.items():
-    data_url = f'https://www.texas-drilling.com/map-search?api_no=&county={county_id}&lease_key=&well_name=&operator_name=&field_formation=&json='
-    with urllib.request.urlopen(data_url) as fd:
-      data_json = json.loads(fd.read().decode('utf-8'))
-      for point in data_json.get('point', []):
-        texas_oil_field_esri_features.append({
-          'geometry': {
-            'x': point.get('point', [0.0, 0.0])[0],
-            'y': point.get('point', [0.0, 0.0])[1],
-          },
-          'attributes': {
-            'name': point.get('name', ''),
-          },
-        })
+    texas_oil_field_esri_features = []
+    for county_name, county_id in county_id_to_name_dict.items():
+      data_url = f'https://www.texas-drilling.com/map-search?api_no=&county={county_id}&lease_key=&well_name=&operator_name=&field_formation=&json='
+      with urllib.request.urlopen(data_url) as fd:
+        data_json = json.loads(fd.read().decode('utf-8'))
+        for point in data_json.get('point', []):
+          texas_oil_field_esri_features.append({
+            'geometry': {
+              'x': point.get('point', [0.0, 0.0])[0],
+              'y': point.get('point', [0.0, 0.0])[1],
+            },
+            'attributes': {
+              'name': point.get('name', ''),
+            },
+          })
 
-  downloaded_data['texas-drilling.com'] = texas_oil_field_esri_features
+    downloaded_data['texas-drilling.com'] = texas_oil_field_esri_features
 
 except:
   traceback.print_exc()
