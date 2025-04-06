@@ -17,12 +17,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Grab data
     let data: serde_pickle::Value = if let Some(pickle_file) = args.get(1) {
         println!("Reading sea of raw data from {}", &pickle_file);
+        let begin_t = std::time::SystemTime::now();
         let pickle_bytes: Vec<u8> = std::fs::read(pickle_file)?;
         let de_options = serde_pickle::DeOptions::new()
                             .decode_strings()
                             .replace_recursive_structures()
                             .replace_unresolved_globals();
-        serde_pickle::value_from_reader(pickle_bytes.as_slice(), de_options)?
+        let data = serde_pickle::value_from_reader(pickle_bytes.as_slice(), de_options)?;
+        print_time_since(&begin_t, format!("Time taken to read pickle file {}", &pickle_file ));
+        data
     }
     else {
         return Err("Error: pass path to a .pickle file containing a dictionary of layers + GIS data within".into());
