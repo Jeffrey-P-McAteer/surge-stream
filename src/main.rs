@@ -91,6 +91,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let begin_t = std::time::SystemTime::now();
     let mut debug_gis_records: Vec<gis_structs::DebugPoint> = vec![];
     for (lat_y, lon_x, debug_msg) in all_known_points.iter() {
+        // Filter logic: Skip all points containing "wind" and "turbine" in their debug_msg
+        if debug_msg.contains("Wind") && debug_msg.contains("Turbine") {
+            continue;
+        }
+        if debug_msg.contains("Solar") && debug_msg.contains("solar") {
+            continue;
+        }
+        if debug_msg.contains("texas-drilling.com") { // Not interested in these at the moment
+            continue;
+        }
+        if debug_msg.contains("Battery_Storage") {
+            continue;
+        }
+
         debug_gis_records.push(gis_structs::DebugPoint{
             msg: debug_msg.to_string(),
             geom: gpkg::types::GPKGPointZ { x: *lon_x, y: *lat_y, z: 0.0},

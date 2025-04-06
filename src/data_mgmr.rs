@@ -145,9 +145,18 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
             let mut product_type_s = String::new();
             let mut amount_thousand_barrels_per_day = 0.0;
 
+            // A natural gas producer will contain "" and "" in the data
+
             if let Some(attributes_v) = map.get( &serde_pickle::value::HashableValue::String("attributes".into()) ) {
               if let serde_pickle::Value::Dict(attributes_map) = attributes_v {
                 for (k,v) in attributes_map.iter() {
+                  let v_string_lower = format!("{:?}", v).to_lowercase();
+                  if v_string_lower.contains("gas") && v_string_lower.contains("process") && v_string_lower.contains("plant") {
+                    // Is DEFINITELY a natural gas producer!
+                    is_a_producer = true;
+                    product_type_s = "natural gas".to_string();
+                  }
+
                   /*let k_string = if let serde_pickle::value::HashableValue::String(k_string_val) = k {
                     k_string_val.clone()
                   }
@@ -187,5 +196,13 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
 
   return points;
 }
+
+pub fn read_number(possible_names: &[&'static str], attributes: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> f64 {
+  let val = 0.0;
+
+  return val;
+}
+
+
 
 
