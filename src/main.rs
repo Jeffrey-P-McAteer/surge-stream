@@ -1,7 +1,7 @@
 
 #![allow(
     unused_mut, dead_code, non_upper_case_globals, unused_variables,
-    unreachable_code, unused_assignments,
+    unreachable_code, unused_assignments, non_snake_case,
 )]
 
 mod data_mgmr;
@@ -53,7 +53,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // We extract the point data w/ numbers like "<Product Type> Downstream Charge Capacity, Current Year (Barrels Per Calendar Day)"
     // and use that as OUTPUT for that type at that location.
 
+    let all_known_points = data_mgmr::get_all_points(&data);
+    if is_verbose {
+        eprintln!("all_known_points.len() = {}", all_known_points.len());
+    }
 
+    let mut all_known_points_GeoPoint2d: Vec<galileo_types::geo::impls::GeoPoint2d> = vec![];
+    for (lat, lon) in all_known_points.iter() {
+        all_known_points_GeoPoint2d.push(
+            galileo_types::geo::impls::GeoPoint2d::latlon(*lat, *lon)
+        );
+    }
 
     // Build spatial indexes
     let aoi_center = galileo_types::geo::impls::GeoPoint2d::latlon(
@@ -93,7 +103,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }).build()?
         )
         .with_layer(galileo::layer::FeatureLayer::new(
-            vec![ galileo_types::geo::impls::GeoPoint2d::latlon(38.344335, -77.571676) ],
+            all_known_points_GeoPoint2d,
             galileo::symbol::CirclePointSymbol::new(galileo::Color::BLUE, 5.0),
             galileo_types::geo::Crs::WGS84,
         ))
