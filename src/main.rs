@@ -7,7 +7,8 @@
 mod data_mgmr;
 mod structs;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main(flavor = "multi_thread", worker_threads = 6)]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let verbose_str = std::env::var("VERBOSE").unwrap_or("".into());
     let is_verbose = verbose_str.len() > 0;
 
@@ -55,8 +56,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     // Build spatial indexes
+    let aoi_center = galileo_types::geo::impls::GeoPoint2d::latlon(
+        (assumptions.aoi_min_map_pt.0 + assumptions.aoi_max_map_pt.0) / 2.0,
+        (assumptions.aoi_min_map_pt.1 + assumptions.aoi_max_map_pt.1) / 2.0,
+    );
+    let map_zoom_resolution = 14000.0;
 
-
+    // Finally render a map w/ results!
+    use galileo_types::geo::NewGeoPoint;
+    galileo_egui::init(galileo::MapBuilder::default()
+        .with_position(aoi_center)
+        .with_resolution(map_zoom_resolution)
+        .with_layer(
+            galileo::layer::raster_tile_layer::RasterTileLayerBuilder::new_rest(
+                |index| {
+                /*format!(
+                    "https://tile.openstreetmap.org/{}/{}/{}.png",
+                    index.z, index.x, index.y
+                )*/
+                let mut q = String::new();
+                for i in (1..index.z+1).rev() {
+                    let mut digit = 0;
+                    let mask = 1 << (i - 1);
+                    if index.x & mask != 0 {
+                        digit += 1;
+                    }
+                    if index.y & mask != 0 {
+                        digit += 2;
+                    }
+                    q = format!("{q}{digit}");
+                }
+                format!(
+                    "http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1",
+                    q=q
+                )
+            }).build()?
+        )
+        .with_layer(galileo::layer::FeatureLayer::new(
+            vec![ galileo_types::geo::impls::GeoPoint2d::latlon(38.344335, -77.571676) ],
+            galileo::symbol::CirclePointSymbol::new(galileo::Color::BLUE, 5.0),
+            galileo_types::geo::Crs::WGS84,
+        ))
+        .build(), [])?;
 
     Ok(())
 }
