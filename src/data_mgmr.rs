@@ -35,7 +35,7 @@ pub fn get_all_points(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, String)>
                     format!("{}", k)
                   };
                   let v_string = format!("{:?}", v);
-                  debug_s += &format!("{k_string}={v_string},");
+                  debug_s += &format!("{k_string}={v_string}\n");
                 }
               }
             }
