@@ -169,6 +169,7 @@ try:
             },
             'attributes': {
               'name': point.get('name', ''),
+              'from_layer_name': 'texas-drilling.com',
             },
           })
       print(f'Saved data from texas-drilling.com for {county_name}')
