@@ -177,6 +177,7 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                 }
                 if is_a_producer {
                   amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "!"], attributes_map);
+                  name_s = read_string_containing(&["Name", "name", "NAME"], attributes_map);
                 }
               }
             }
@@ -237,6 +238,7 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                   }
                 }
                 if contains_mw_key_indicating_reciever_of_fuel {
+                  name_s = read_string_containing(&["Name", "name", "NAME"], attributes_map);
                   // This looks like a plant turning fuel into electricity, thus it is a consumer of that resource
                   for (k,v) in attributes_map.iter() {
                     let v_string_lower = format!("{:?}", v).to_lowercase();
@@ -303,6 +305,73 @@ pub fn read_number(possible_names: &[&'static str], attribute_map: &std::collect
         }
         _unused => {
 
+        }
+      }
+    }
+  }
+  return val;
+}
+
+
+pub fn read_string(possible_names: &[&'static str], attribute_map: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> String {
+  let val = String::new();
+  for name in possible_names.iter() {
+    if *name == "!" {
+      eprintln!("Cannot find any of {:?} in {:#?}", possible_names, attribute_map);
+      panic!("Cannot find an attribute we expected!");
+    }
+    if let Some(val) = attribute_map.get( &serde_pickle::value::HashableValue::String((*name).into()) ) {
+      match val {
+        serde_pickle::value::Value::F64(as_f64) => {
+          return format!("{}", as_f64);
+        }
+        serde_pickle::value::Value::I64(as_i64) => {
+          return format!("{}", as_i64);
+        }
+        serde_pickle::value::Value::Int(big_int) => {
+          panic!("TODO implement transforming serde_pickle::value::Value::Int into 64 bits of data... somehow.");
+        }
+        serde_pickle::value::Value::String(string_val) => {
+          return string_val.clone();
+        }
+        serde_pickle::value::Value::Bytes(bytes_val) => {
+          return String::from_utf8_lossy(bytes_val).to_string();
+        }
+        _unused => {
+
+        }
+      }
+    }
+  }
+  return val;
+}
+
+
+pub fn read_string_containing(possible_names: &[&'static str], attribute_map: &std::collections::btree_map::BTreeMap<serde_pickle::value::HashableValue, serde_pickle::value::Value>) -> String {
+  let val = String::new();
+  for (k,val) in attribute_map.iter() {
+    let k_string = format!("{:?}", k);
+    for name in possible_names.iter() {
+      if k_string.contains(name) {
+        match val {
+          serde_pickle::value::Value::F64(as_f64) => {
+            return format!("{}", as_f64);
+          }
+          serde_pickle::value::Value::I64(as_i64) => {
+            return format!("{}", as_i64);
+          }
+          serde_pickle::value::Value::Int(big_int) => {
+            panic!("TODO implement transforming serde_pickle::value::Value::Int into 64 bits of data... somehow.");
+          }
+          serde_pickle::value::Value::String(string_val) => {
+            return string_val.clone();
+          }
+          serde_pickle::value::Value::Bytes(bytes_val) => {
+            return String::from_utf8_lossy(bytes_val).to_string();
+          }
+          _unused => {
+
+          }
         }
       }
     }
