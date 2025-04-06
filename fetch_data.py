@@ -84,6 +84,7 @@ try:
     ('USA_Railroads_1', 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Railroads_1/FeatureServer/0'),
     ('US_Wind_Turbine_Database', 'https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/US_Wind_Turbine_Database/FeatureServer/0'),
     ('NaturalGas_ProcessingPlants_US_EIA', 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Natural_Gas_Processing_Plants1/FeatureServer/0'),
+    ('PetroleumProduct_Terminals_US_EIA', 'https://services7.arcgis.com/FGr1D95XCGALKXqM/ArcGIS/rest/services/PetroleumProduct_Terminals_US_EIA/FeatureServer/36'),
   ]
 
   # "QUANTITY12" isn't useful esri! This is the result of Jeff mapping data names to layer label names -_-

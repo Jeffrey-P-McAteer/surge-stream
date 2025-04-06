@@ -79,6 +79,11 @@ pub fn get_all_lines(data_sea: &serde_pickle::Value) -> Vec<crate::gis_structs::
               }
             }
 
+            // Skip this if it is a railway; // TODO return to these features l8ter
+            if debug_s.contains("Railroad") {
+              return lines;
+            }
+
             for paths_list_v in paths_list.iter() {
               let mut line_string_vec: Vec<(f64, f64)> = vec![];
               if let serde_pickle::Value::List(one_path_list) = paths_list_v {
@@ -247,9 +252,19 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                       is_a_consumer = true;
                       product_type_s = "natural gas".to_string();
                     }
+                    if v_string_lower.contains("wastewater") && v_string_lower.contains("plant") {
+                      // We assume wastewater plants intake petroleum
+                      is_a_consumer = true;
+                      product_type_s = "petroleum".to_string();
+                    }
+                    if v_string_lower.contains("petroleumproduct_terminals") {
+                      // These are typically near airports, just big terminals unloading into smaller industrial things
+                      is_a_consumer = true;
+                      product_type_s = "petroleum".to_string();
+                    }
                   }
                   if is_a_consumer {
-                    amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW", "!"], attributes_map);
+                    amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW"], attributes_map);
                   }
                 }
               }
