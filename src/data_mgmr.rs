@@ -182,7 +182,7 @@ pub fn get_all_producers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                 }
                 if is_a_producer {
                   amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "!"], attributes_map);
-                  name_s = read_string_containing(&["Name", "name", "NAME"], attributes_map);
+                  name_s = read_string_containing(&["Name", "name", "NAME", "Company"], attributes_map);
                 }
               }
             }
@@ -234,6 +234,7 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
 
             if let Some(attributes_v) = map.get( &serde_pickle::value::HashableValue::String("attributes".into()) ) {
               if let serde_pickle::Value::Dict(attributes_map) = attributes_v {
+
                 let mut contains_mw_key_indicating_reciever_of_fuel = false;
                 for (k,v) in attributes_map.iter() {
                   if let serde_pickle::value::HashableValue::String(key_str) = k {
@@ -243,7 +244,7 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                   }
                 }
                 if contains_mw_key_indicating_reciever_of_fuel {
-                  name_s = read_string_containing(&["Name", "name", "NAME"], attributes_map);
+                  name_s = read_string_containing(&["Name", "name", "NAME", "Company"], attributes_map);
                   // This looks like a plant turning fuel into electricity, thus it is a consumer of that resource
                   for (k,v) in attributes_map.iter() {
                     let v_string_lower = format!("{:?}", v).to_lowercase();
@@ -252,6 +253,13 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                       is_a_consumer = true;
                       product_type_s = "natural gas".to_string();
                     }
+                  }
+                }
+
+                // After the 2x attribute EP decision, do searches for wastewater and terminal plants
+                if ! is_a_consumer {
+                  for (k,v) in attributes_map.iter() {
+                    let v_string_lower = format!("{:?}", v).to_lowercase();
                     if v_string_lower.contains("wastewater") && v_string_lower.contains("plant") {
                       // We assume wastewater plants intake petroleum
                       is_a_consumer = true;
@@ -263,10 +271,14 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                       product_type_s = "petroleum".to_string();
                     }
                   }
-                  if is_a_consumer {
-                    amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW"], attributes_map);
-                  }
                 }
+
+                // If we are labeled as a consumer of a product, read from some numbers to see how MUCH product is being consumed.
+                // Note that EP facilities will generally have these as Megawatts, and so some math downstream needs to go back to product units.
+                if is_a_consumer {
+                  amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW"], attributes_map);
+                }
+
               }
             }
 
