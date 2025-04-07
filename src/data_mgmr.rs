@@ -242,15 +242,25 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                       contains_mw_key_indicating_reciever_of_fuel = true;
                     }
                   }
+                  if let serde_pickle::value::Value::String(val_str) = v {
+                    if val_str.ends_with("MW") || val_str.ends_with("mw") {
+                      contains_mw_key_indicating_reciever_of_fuel = true;
+                    }
+                  }
                 }
                 if contains_mw_key_indicating_reciever_of_fuel {
                   // This looks like a plant turning fuel into electricity, thus it is a consumer of that resource
                   for (k,v) in attributes_map.iter() {
                     let v_string_lower = format!("{:?}", v).to_lowercase();
                     if v_string_lower.contains("gas") && v_string_lower.contains("process") && v_string_lower.contains("plant") {
-                      // Is DEFINITELY a natural gas producer!
+                      // Is Some-sort of a natural gas plant, and we already know it produces electricity.
                       is_a_consumer = true;
                       product_type_s = "natural gas".to_string();
+                    }
+                    if v_string_lower.contains("petroleum") && v_string_lower.contains("power") && v_string_lower.contains("plant") {
+                      // Is DEFINITELY a petroleum power plant!
+                      is_a_consumer = true;
+                      product_type_s = "petroleum".to_string();
                     }
                   }
                 }
