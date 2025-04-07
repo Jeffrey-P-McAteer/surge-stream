@@ -128,6 +128,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         if debug_msg.contains("Battery_Storage") {
             continue;
         }
+        if debug_msg.contains("Hydroelectric") || debug_msg.contains("hydroelectric") {
+            continue;
+        }
 
         debug_gis_records.push(gis_structs::DebugPoint{
             msg: debug_msg.to_string(),

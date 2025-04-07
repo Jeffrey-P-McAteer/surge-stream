@@ -262,6 +262,11 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                       is_a_consumer = true;
                       product_type_s = "petroleum".to_string();
                     }
+                    if v_string_lower.contains("natural") && v_string_lower.contains("gas") && v_string_lower.contains("power") && v_string_lower.contains("plant") {
+                      // Is DEFINITELY a natural gas power plant!
+                      is_a_consumer = true;
+                      product_type_s = "natural gas".to_string();
+                    }
                   }
                 }
 
