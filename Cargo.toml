@@ -13,7 +13,7 @@ toml = "0.8"
 tokio = { version = "1", features = ["full"] }
 
 gpkg = { git = "https://github.com/cjriley9/gpkg-rs.git" }
-rusqlite = { version = "0.27", features = ["bundled"]} # gpkg uses this version of rusqlite -_-
+rusqlite = { version = "0.27", features = ["bundled", "modern_sqlite"]} # gpkg uses this version of rusqlite -_-
 
 
 #galileo = { version = "0.1", features = ["wgpu", "serde", "winit", "geojson"]}

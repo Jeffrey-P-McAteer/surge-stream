@@ -167,6 +167,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let removed_producers_because_gen_facs = original_production_point_gis_records_len - production_point_gis_records.len();
     println!("Removed {} producers because they were within 500m of an electric power generator, and we assume this indicates vague data.", removed_producers_because_gen_facs);
 
+    eprintln!("gp.conn.is_busy = {}", gp.conn.is_busy());
 
     let begin_t = std::time::SystemTime::now();
     gp.insert_many(&debug_gis_records)?;
