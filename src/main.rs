@@ -80,18 +80,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // For now we use the output geopackage to place our logical network features + qgis to display them
     let mut gp = if !std::path::Path::new(output_gpkg).exists() {
-        let gp = gpkg::GeoPackage::create(output_gpkg)?;
-        gp.create_layer::<gis_structs::DebugPoint>()?;
-        gp.create_layer::<gis_structs::DebugLine>()?;
-
-        gp.create_layer::<gis_structs::ProductionPoint>()?;
-        gp.create_layer::<gis_structs::ConsumptionPoint>()?;
-
-        gp
+        gpkg::GeoPackage::create(output_gpkg)?
     }
     else {
         gpkg::GeoPackage::open(output_gpkg)?
     };
+
+    if let Err(e) = gp.create_layer::<gis_structs::DebugPoint>() {
+        eprintln!("{}:{} {:?}", file!(), line!(), e);
+    }
+    if let Err(e) = gp.create_layer::<gis_structs::DebugLine>() {
+        eprintln!("{}:{} {:?}", file!(), line!(), e);
+    }
+    if let Err(e) = gp.create_layer::<gis_structs::ProductionPoint>() {
+        eprintln!("{}:{} {:?}", file!(), line!(), e);
+    }
+    if let Err(e) = gp.create_layer::<gis_structs::ConsumptionPoint>() {
+        eprintln!("{}:{} {:?}", file!(), line!(), e);
+    }
 
     let begin_t = std::time::SystemTime::now();
     let mut debug_gis_records: Vec<gis_structs::DebugPoint> = vec![];
