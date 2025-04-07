@@ -287,7 +287,7 @@ pub fn get_all_consumers(data_sea: &serde_pickle::Value) -> Vec<(f64, f64, Strin
                 // Note that EP facilities will generally have these as Megawatts, and so some math downstream needs to go back to product units.
                 if is_a_consumer {
                   name_s = read_string_containing(&["Name", "name", "NAME", "Company"], attributes_map);
-                  amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Crude_MW"], attributes_map);
+                  amount_thousand_barrels_per_day = read_number(&["Plant_Flow", "Total_MW", "NG_MW", "Install_MW", "Crude_MW"], attributes_map);
                 }
 
               }
